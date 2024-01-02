@@ -1,20 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
+import React, { useEffect } from "react";
+import { Alert, SafeAreaView } from "react-native";
+import Navigator from "./src/navigation";
+import storage from "./src/storage";
+import authStore from "./src/store/authStore";
+import themeStore from "./src/store/themeStore";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const { themeRestore } = themeStore();
+  const { authRestore } = authStore();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (!state.isConnected || state.type !== "wifi") {
+        Alert.alert("Không có kết nối wifi", "Vui lòng mở cài đặt và kết nối với WIFI công ty.", [
+          {
+            text: "Đóng",
+          },
+        ]);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    let themeData = storage.getString("@ht:theme");
+    let userData = storage.getString("@ht:user");
+    if (themeData) {
+      themeRestore(themeData);
+    }
+    if (userData) {
+      authRestore(userData);
+    }
+  }, []);
+
+  return <Navigator />;
+}

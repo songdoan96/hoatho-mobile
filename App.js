@@ -27,9 +27,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    let themeData = storage.getString("@ht:theme");
+    let themeData = storage.getBoolean("@ht:theme");
     let userData = storage.getString("@ht:user");
-    if (themeData) {
+    if (typeof themeData !== "undefined") {
       themeRestore(themeData);
     }
     if (userData) {

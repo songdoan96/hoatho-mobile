@@ -26,9 +26,11 @@ import { Platform } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import authStore from "../store/authStore";
 import RootDisplay from "../components/RootDisplay";
+import toastStore from "../store/toastStore";
 
 const LoginScreen = ({ navigation }) => {
   const colorMode = useColorMode();
+  const { setShowToast } = toastStore();
 
   const { authLogin, loginLoading, loginError } = authStore();
   const [formData, setFormData] = useState({
